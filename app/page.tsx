@@ -8,6 +8,7 @@ import { title, subtitle } from "@/components/primitives";
 import { GithubIcon } from "@/components/icons";
 import { Tab, Tabs } from "@heroui/tabs";
 import { TabTest } from "@/components/tab-test";
+import { PopoverTest } from "@/components/popover-test";
 
 export default function Home() {
   return (
@@ -23,6 +24,7 @@ export default function Home() {
           Beautiful, fast and modern React UI library.
         </div>
         <TabTest></TabTest>
+        <PopoverTest></PopoverTest>
       </div>
 
       <div className="flex gap-3">
