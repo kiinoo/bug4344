@@ -9,11 +9,13 @@ import { Input } from "@heroui/input";
 
 
 const MyEndContent = (props: any) => {
+  const [isOpen, setIsOpen] = useState(false);
   return (
     <div>
-      <Popover placement="right" isNonModal={false}>
+      <Popover placement="right" isNonModal={false} isOpen={isOpen} onClose={() => setIsOpen(false)}>
         <PopoverTrigger>
-          <Button variant="light" >Popover
+          <Button variant="light" onPress={() => setIsOpen(!isOpen)}>
+            Popover
           </Button>
         </PopoverTrigger>
         <PopoverContent>
