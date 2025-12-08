@@ -4,6 +4,7 @@ import * as React from 'react'
 import ParentChild from './parent-children'
 import ColorApp from './color'
 import CounterApp from './counter-logger'
+import SyncApp from './sync'
 
 export default function Page() {
   return (
@@ -16,6 +17,9 @@ export default function Page() {
       </Tab>
       <Tab title="DefaultApp">
         <ColorApp />
+      </Tab>
+      <Tab title="UseSync">
+        <SyncApp />
       </Tab>
     </Tabs>
   )
