@@ -8,11 +8,12 @@ export default function App() {
   return (
     <div>
       <div>
-        <p>useSyncExternal</p>
+        <p className="font-bold">useSyncExternal</p>
         <p>Width: {size2.width}</p>
         <p>Height: {size2.height}</p>
       </div>
       <div>
+        <p className="font-bold">useState</p>
         <p>Width: {size.width}</p>
         <p>Height: {size.height}</p>
       </div>

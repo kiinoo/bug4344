@@ -1,39 +1,60 @@
-import { useState, useLayoutEffect, useDebugValue, useDeferredValue } from "react";
+import { useState, useEffect, useLayoutEffect } from "react";
 
 
 export function useSyncExternalStore<T>(
-  subscribe: (onStoreChange: () => void) => () => void, 
-  getSnapshot: () => T, 
+  subscribe: (onStoreChange: () => void) => () => void,
+  getSnapshot: () => T,
   getServerSnapshot?: (() => T) | undefined
 ): T {
   const [state, setState] = useState(getSnapshot);
 
   useLayoutEffect(() => {
     function handleStoreChange() {
-      const newState = getServerSnapshot? getServerSnapshot() : getSnapshot();
+      const newState = getSnapshot();
+      console.log("handleStoreChange", newState);
       setState(newState);
     }
-    return subscribe(handleStoreChange);
-  }, [subscribe, getSnapshot, getServerSnapshot]);
+    console.log("useSyncExternalStore subscribe");
+    const unsub = subscribe(handleStoreChange);
+    return () => {
+      console.log("useSyncExternalStore unsubscribe");
+      unsub();
+    }
+  }, [subscribe]);
   return state;
 }
 
 // ------------------------
 
 function subscribe(onStoreChange: () => void) {
-   window.addEventListener('resize', onStoreChange);
-   window.addEventListener('resize', ()=> {
-      console.log("resize event in subscribe", window.innerWidth);
-   });
-   return () => window.removeEventListener('resize', onStoreChange);
+  console.log("subscribe resize");
+  const handle = () => {
+    onStoreChange();
+    console.log("resize event in subscribe", window.innerWidth);
+  };
+  window.addEventListener('resize', handle);
+  return () => {
+    console.log("unsubscribe resize");
+    window.removeEventListener('resize', handle);
+  }
 }
+
+function getWindowSize() {
+  return {
+    width: window.innerWidth,
+    height: window.innerHeight,
+  }
+}
+
+let counter = 0;
+
 export function useWindowSize2() {
   // useDebugValue(`xxx Size ${window.innerWidth} x ${window.innerHeight}`);
-  return useSyncExternalStore(subscribe, () => ({
-    width: window.innerWidth,
-    height: window.innerHeight,
-  }), () => ({
-    width: window.innerWidth,
-    height: window.innerHeight,
-  }));
+  return useSyncExternalStore(subscribe, () => {
+    console.log(`counter ${counter++}`)
+    return {
+      width: window.innerWidth,
+      height: window.innerHeight,
+    }
+  });
 }

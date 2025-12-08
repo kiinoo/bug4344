@@ -5,13 +5,14 @@ export function useWindowSize() {
   const [height, setHeight] = useState(window.innerHeight);
 
   useLayoutEffect(() => {
-    window.addEventListener('resize', () => {
-      console.log("resize event", window.innerWidth);
+    const handle = () => {
+      console.log("resize event in useWindowSize", window.innerWidth);
       setWidth(window.innerWidth);
       setHeight(window.innerHeight);
-    });
+    };
+    window.addEventListener('resize', handle);
     return () => {
-      window.removeEventListener('resize', () => {});
+      window.removeEventListener('resize', handle);
     }
   }, []);
 
