@@ -1,4 +1,5 @@
 import { useState, useEffect, useLayoutEffect } from "react";
+import { EventEmitter } from "stream";
 
 
 export function useSyncExternalStore<T>(
@@ -11,15 +12,9 @@ export function useSyncExternalStore<T>(
   useLayoutEffect(() => {
     function handleStoreChange() {
       const newState = getSnapshot();
-      console.log("handleStoreChange", newState);
       setState(newState);
     }
-    console.log("useSyncExternalStore subscribe");
-    const unsub = subscribe(handleStoreChange);
-    return () => {
-      console.log("useSyncExternalStore unsubscribe");
-      unsub();
-    }
+    return subscribe(handleStoreChange);
   }, [subscribe]);
   return state;
 }
@@ -27,6 +22,24 @@ export function useSyncExternalStore<T>(
 // ------------------------
 
 function subscribe(onStoreChange: () => void) {
+  window.addEventListener('resize', onStoreChange);
+  return () => {
+    window.removeEventListener('resize', onStoreChange);
+  }
+}
+
+export function useWindowSize2() {
+  // useDebugValue(`xxx Size ${window.innerWidth} x ${window.innerHeight}`);
+  return useSyncExternalStore(subscribe, () => {
+    console.log(`counter ${counter++}`)
+    return {
+      width: window.innerWidth,
+      height: window.innerHeight,
+    }
+  });
+}
+
+function subscribe2(onStoreChange: () => void) {
   console.log("subscribe resize");
   const handle = () => {
     onStoreChange();
@@ -48,13 +61,23 @@ function getWindowSize() {
 
 let counter = 0;
 
-export function useWindowSize2() {
-  // useDebugValue(`xxx Size ${window.innerWidth} x ${window.innerHeight}`);
-  return useSyncExternalStore(subscribe, () => {
-    console.log(`counter ${counter++}`)
-    return {
-      width: window.innerWidth,
-      height: window.innerHeight,
+export function useSyncExternalStore3<T>(
+  eventemitter: EventEmitter,
+  getSnapshot: () => T,
+  getServerSnapshot?: (() => T) | undefined
+): T {
+  const [state, setState] = useState(getSnapshot);
+
+  useLayoutEffect(() => {
+    function handleStoreChange() {
+      const newState = getSnapshot();
+      setState(newState);
     }
-  });
+    eventemitter.on('change', handleStoreChange)
+    return () => {
+      eventemitter.off('change', handleStoreChange)
+    };
+    // return subscribe(handleStoreChange);
+  }, [eventemitter]);
+  return state;
 }

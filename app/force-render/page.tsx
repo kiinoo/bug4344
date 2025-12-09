@@ -5,6 +5,9 @@ import ParentChild from './parent-children'
 import ColorApp from './color'
 import CounterApp from './counter-logger'
 import SyncApp from './sync'
+import ContextApp from './context'
+import StateApp from './state'
+import ReducerApp from './reducer'
 
 export default function Page() {
   return (
@@ -20,6 +23,15 @@ export default function Page() {
       </Tab>
       <Tab title="UseSync">
         <SyncApp />
+      </Tab>
+      <Tab title="ContextApp">
+        <ContextApp />
+      </Tab>
+      <Tab title="StateApp">
+        <StateApp />
+      </Tab>
+      <Tab title="ReducerApp">
+        <ReducerApp />
       </Tab>
     </Tabs>
   )
